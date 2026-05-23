@@ -3,113 +3,998 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Control - Bot SII Pro</title>
+    <title>Balancen - Panel Contable</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --bg: #f8fafc;
-            --card-bg: #ffffff;
-            --text: #1e293b;
+            --sidebar-bg: #0f172a;
+            --sidebar-hover: #1e293b;
+            --primary: #059669;
+            --primary-hover: #047857;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --text-dark: #0f172a;
+            --text-light: #64748b;
             --border: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
         
-        /* Contenedores Principales */
-        .container { width: 100%; max-width: 450px; background: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .hidden { display: none !important; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         
-        /* Tipografía y Elementos */
-        h2 { margin-bottom: 20px; font-size: 24px; text-align: center; color: #0f172a; }
-        .form-group { margin-bottom: 16px; }
-        label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 500; }
-        input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 15px; outline: none; transition: border 0.2s; }
-        input:focus { border-color: var(--primary); }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-main);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
         
-        /* Botones */
-        button { width: 100%; padding: 12px; background-color: var(--primary); color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-        button:hover { background-color: var(--primary-hover); }
-        button:disabled { background-color: #cbd5e1; cursor: not-allowed; }
+        .hidden {
+            display: none !important;
+        }
         
-        /* Alertas y Estado */
-        .alert { padding: 12px; border-radius: 6px; margin-bottom: 16px; font-size: 14px; text-align: center; }
-        .alert-error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
-        .alert-success { background-color: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        /* ==================== SIDEBAR ==================== */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 260px;
+            background: var(--sidebar-bg);
+            padding: 24px 0;
+            z-index: 1000;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.1);
+        }
         
-        /* Estilos del Panel (Dashboard) */
-        .panel-box { max-width: 800px; width: 100%; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
-        .card { background: var(--card-bg); pading: 20px; border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
-        .log-box { background: #0f172a; color: #38bdf8; font-family: monospace; padding: 15px; border-radius: 6px; height: 150px; overflow-y: auto; margin-top: 15px; font-size: 13px; }
+        .logo {
+            padding: 0 24px 32px;
+            text-align: center;
+        }
+        
+        .logo-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        
+        .logo-text {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .menu {
+            list-style: none;
+        }
+        
+        .menu-item {
+            margin: 4px 12px;
+        }
+        
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #cbd5e1;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .menu-link:hover {
+            background: var(--sidebar-hover);
+            color: white;
+        }
+        
+        .menu-link.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .menu-link.bot-special {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        
+        .menu-link.bot-special:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .menu-link.logout {
+            color: var(--danger);
+            margin-top: auto;
+            position: absolute;
+            bottom: 24px;
+            left: 12px;
+            right: 12px;
+        }
+        
+        .menu-link.logout:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        .menu-icon {
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* ==================== MAIN CONTENT ==================== */
+        .main-content {
+            margin-left: 260px;
+            min-height: 100vh;
+        }
+        
+        .topbar {
+            background: white;
+            padding: 16px 32px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: var(--primary);
+            color: white;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: white;
+            color: var(--primary);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+        
+        .content-area {
+            padding: 32px;
+        }
+        
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+        
+        .page-subtitle {
+            font-size: 16px;
+            color: var(--text-light);
+            margin-bottom: 32px;
+        }
+        
+        /* ==================== CARD GRID (INICIO) ==================== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+        
+        .feature-card {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+        
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+        
+        .feature-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        /* ==================== BOT SII SECTION ==================== */
+        .bot-container {
+            max-width: 1000px;
+        }
+        
+        .bot-login-card {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+        
+        .bot-control-area {
+            opacity: 0.5;
+            pointer-events: none;
+            transition: all 0.3s;
+        }
+        
+        .bot-control-area.unlocked {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .card-header {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        
+        input {
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+            font-size: 16px;
+            padding: 16px 32px;
+            width: 100%;
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        .alert {
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.3s;
+        }
+        
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+        
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .info-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+        }
+        
+        .info-label {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .info-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .status-badge.inactive {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+        
+        .status-badge.running {
+            background: #dbeafe;
+            color: #1e40af;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-badge.success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-badge.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        /* ==================== CONSOLE ==================== */
+        .console-container {
+            background: #0f172a;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 24px;
+        }
+        
+        .console-header {
+            background: #1e293b;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #334155;
+        }
+        
+        .console-title {
+            color: #e2e8f0;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .console-dots {
+            display: flex;
+            gap: 6px;
+        }
+        
+        .console-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .console-dot.red { background: #ef4444; }
+        .console-dot.yellow { background: #f59e0b; }
+        .console-dot.green { background: #10b981; }
+        
+        .console-body {
+            padding: 20px;
+            height: 300px;
+            overflow-y: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            color: #06b6d4;
+        }
+        
+        .console-body::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .console-body::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        
+        .console-body::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        
+        .log-entry {
+            margin-bottom: 4px;
+            animation: logAppear 0.3s;
+        }
+        
+        @keyframes logAppear {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .log-time {
+            color: #64748b;
+            margin-right: 8px;
+        }
+        
+        .log-success { color: #10b981; }
+        .log-error { color: #ef4444; }
+        .log-warning { color: #f59e0b; }
+        .log-info { color: #06b6d4; }
+        
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 220px;
+            }
+            
+            .main-content {
+                margin-left: 220px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s;
+            }
+            
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .content-area {
+                padding: 20px;
+            }
+            
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div id="login-section" class="container">
-        <h2>Bot SII - Iniciar Sesión</h2>
-        <div id="login-alert" class="alert hidden"></div>
-        <form id="login-form">
-            <div class="form-group">
-                <label for="rut">RUT Empresa / Usuario</label>
-                <input type="text" id="rut" placeholder="12345678-9" required>
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-content">
+                <div class="logo-icon">⚖️</div>
+                <div class="logo-text">Balancen</div>
             </div>
-            <div class="form-group">
-                <label for="password">Clave SII</label>
-                <input type="password" id="password" placeholder="Tu clave tributaria" required>
-            </div>
-            <button type="submit" id="btn-login">Ingresar al Panel</button>
-        </form>
-    </div>
-
-    <div id="panel-section" class="container panel-box hidden">
-        <h2>Panel de Control Automatizado</h2>
-        <div id="panel-alert" class="alert hidden"></div>
+        </div>
         
-        <div class="card">
-            <h3>Control del Robot</h3>
-            <p style="margin: 8px 0; color: #64748b; font-size: 14px;">Presiona el botón para abrir el navegador interno en el servidor y extraer los libros del mes.</p>
-            <button id="btn-run-bot" style="background-color: #10b981;">▶ Ejecutar Bot SII Ahora</button>
+        <nav>
+            <ul class="menu">
+                <li class="menu-item">
+                    <a class="menu-link active" data-section="inicio">
+                        <span class="menu-icon">🏠</span>
+                        <span>Inicio</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" data-section="dashboard">
+                        <span class="menu-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" data-section="clientes">
+                        <span class="menu-icon">👥</span>
+                        <span>Clientes</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" data-section="info-clientes">
+                        <span class="menu-icon">📋</span>
+                        <span>Información de Clientes</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" data-section="match">
+                        <span class="menu-icon">⚖️</span>
+                        <span>Match Contable</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" data-section="descargas">
+                        <span class="menu-icon">📥</span>
+                        <span>Descargas</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" data-section="facturador">
+                        <span class="menu-icon">🚀</span>
+                        <span>Facturador Masivo</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link" data-section="usuarios">
+                        <span class="menu-icon">👤</span>
+                        <span>Usuarios</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link bot-special" data-section="bot-sii">
+                        <span class="menu-icon">🤖</span>
+                        <span>Bot SII</span>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-link logout" href="#" onclick="alert('Sesión cerrada'); return false;">
+                        <span class="menu-icon">❌</span>
+                        <span>Salir</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="main-content">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="user-badge">
+                <div class="user-avatar">A</div>
+                <span>Administrador</span>
+            </div>
         </div>
 
-        <div class="grid">
-            <div class="card">
-                <h4>Último RUT Consultado</h4>
-                <p id="txt-rut-activo" style="font-size: 18px; font-weight: bold; margin-top: 8px; color: var(--primary);">Ninguno</p>
-            </div>
-            <div class="card">
-                <h4>Estado de la Operación</h4>
-                <p id="txt-estado" style="font-size: 18px; font-weight: bold; margin-top: 8px; color: #64748b;">Inactivo</p>
-            </div>
-        </div>
+        <!-- Content Area -->
+        <div class="content-area">
+            
+            <!-- ========== SECCIÓN: INICIO (DEFAULT) ========== -->
+            <section id="section-inicio" class="page-section">
+                <h1 class="page-title">Panel Principal</h1>
+                <p class="page-subtitle">Bienvenido al sistema Balancen</p>
+                
+                <div class="card-grid">
+                    <div class="feature-card" data-nav="dashboard">
+                        <div class="feature-icon">📊</div>
+                        <div class="feature-title">Dashboard</div>
+                    </div>
+                    <div class="feature-card" data-nav="clientes">
+                        <div class="feature-icon">👥</div>
+                        <div class="feature-title">Clientes</div>
+                    </div>
+                    <div class="feature-card" data-nav="info-clientes">
+                        <div class="feature-icon">📋</div>
+                        <div class="feature-title">Información de Clientes</div>
+                    </div>
+                    <div class="feature-card" data-nav="match">
+                        <div class="feature-icon">⚖️</div>
+                        <div class="feature-title">Match Contable</div>
+                    </div>
+                    <div class="feature-card" data-nav="descargas">
+                        <div class="feature-icon">📥</div>
+                        <div class="feature-title">Descarga Libros</div>
+                    </div>
+                    <div class="feature-card" data-nav="facturador">
+                        <div class="feature-icon">🚀</div>
+                        <div class="feature-title">Facturador Masivo</div>
+                    </div>
+                </div>
+            </section>
 
-        <div class="card" style="margin-top: 16px;">
-            <h4>Consola de Eventos en Tiempo Real</h4>
-            <div id="log-console" class="log-box">Esperando órdenes...</div>
+            <!-- ========== SECCIÓN: BOT SII ========== -->
+            <section id="section-bot-sii" class="page-section hidden">
+                <div class="bot-container">
+                    <h1 class="page-title">🤖 Bot SII - Automatización de Extracción RCV</h1>
+                    <p class="page-subtitle">Sistema de scraping automatizado del portal del SII</p>
+
+                    <!-- Login del Bot -->
+                    <div class="bot-login-card">
+                        <h3 class="card-header">
+                            <span>🔐</span>
+                            <span>Autenticación de Credenciales SII</span>
+                        </h3>
+                        
+                        <div id="login-alert" class="alert hidden"></div>
+                        
+                        <form id="bot-login-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="rut">RUT de la Empresa</label>
+                                    <input type="text" id="rut" placeholder="12345678-9" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Clave Tributaria SII</label>
+                                    <input type="password" id="password" placeholder="Ingrese su clave" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="btn-login">
+                                <span id="login-text">Validar Credenciales</span>
+                                <span id="login-spinner" class="spinner hidden"></span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Control del Bot (Bloqueado hasta login) -->
+                    <div class="bot-control-area" id="bot-control">
+                        <div id="bot-alert" class="alert hidden"></div>
+                        
+                        <!-- Botón Principal -->
+                        <div class="bot-login-card">
+                            <h3 class="card-header">
+                                <span>⚡</span>
+                                <span>Control de Ejecución</span>
+                            </h3>
+                            <p style="color: var(--text-light); margin-bottom: 20px; font-size: 14px;">
+                                Presiona el botón para iniciar el proceso automatizado de extracción del Registro de Compras y Ventas.
+                            </p>
+                            <button class="btn btn-success" id="btn-run-bot">
+                                <span id="bot-icon">▶</span>
+                                <span id="bot-text">Ejecutar Bot SII Ahora</span>
+                                <span id="bot-spinner" class="spinner hidden"></span>
+                            </button>
+                        </div>
+
+                        <!-- Métricas -->
+                        <div class="info-grid" style="margin-top: 24px;">
+                            <div class="info-card">
+                                <div class="info-label">Último RUT Consultado</div>
+                                <div class="info-value" id="rut-activo" style="color: var(--primary);">-</div>
+                            </div>
+                            <div class="info-card">
+                                <div class="info-label">Estado de la Operación</div>
+                                <div class="info-value">
+                                    <span class="status-badge inactive" id="estado-bot">
+                                        ⚪ Inactivo
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="info-card">
+                                <div class="info-label">Tiempo Estimado</div>
+                                <div class="info-value" style="font-size: 16px;">~ 15-30 seg</div>
+                            </div>
+                        </div>
+
+                        <!-- Consola de Logs -->
+                        <div class="console-container">
+                            <div class="console-header">
+                                <div class="console-title">
+                                    <span>💻</span>
+                                    <span>Consola de Eventos en Tiempo Real</span>
+                                </div>
+                                <div class="console-dots">
+                                    <div class="console-dot red"></div>
+                                    <div class="console-dot yellow"></div>
+                                    <div class="console-dot green"></div>
+                                </div>
+                            </div>
+                            <div class="console-body" id="console-log">
+                                <div class="log-entry">
+                                    <span class="log-time">[Sistema]</span>
+                                    <span class="log-info">Consola inicializada correctamente</span>
+                                </div>
+                                <div class="log-entry">
+                                    <span class="log-time">[Listo]</span>
+                                    <span class="log-success">Esperando instrucciones del usuario...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== OTRAS SECCIONES (PLACEHOLDERS) ========== -->
+            <section id="section-dashboard" class="page-section hidden">
+                <h1 class="page-title">Dashboard</h1>
+                <p class="page-subtitle">Visualización de métricas y estadísticas</p>
+                <div style="background: white; padding: 40px; border-radius: 12px; text-align: center;">
+                    <p style="color: var(--text-light);">Sección en desarrollo...</p>
+                </div>
+            </section>
+
+            <section id="section-clientes" class="page-section hidden">
+                <h1 class="page-title">Clientes</h1>
+                <p class="page-subtitle">Gestión de clientes y empresas</p>
+                <div style="background: white; padding: 40px; border-radius: 12px; text-align: center;">
+                    <p style="color: var(--text-light);">Sección en desarrollo...</p>
+                </div>
+            </section>
+
+            <section id="section-info-clientes" class="page-section hidden">
+                <h1 class="page-title">Información de Clientes</h1>
+                <p class="page-subtitle">Detalles y documentación de clientes</p>
+                <div style="background: white; padding: 40px; border-radius: 12px; text-align: center;">
+                    <p style="color: var(--text-light);">Sección en desarrollo...</p>
+                </div>
+            </section>
+
+            <section id="section-match" class="page-section hidden">
+                <h1 class="page-title">Match Contable</h1>
+                <p class="page-subtitle">Conciliación y validación contable</p>
+                <div style="background: white; padding: 40px; border-radius: 12px; text-align: center;">
+                    <p style="color: var(--text-light);">Sección en desarrollo...</p>
+                </div>
+            </section>
+
+            <section id="section-descargas" class="page-section hidden">
+                <h1 class="page-title">Descargas</h1>
+                <p class="page-subtitle">Archivos y documentos descargados</p>
+                <div style="background: white; padding: 40px; border-radius: 12px; text-align: center;">
+                    <p style="color: var(--text-light);">Sección en desarrollo...</p>
+                </div>
+            </section>
+
+            <section id="section-facturador" class="page-section hidden">
+                <h1 class="page-title">Facturador Masivo</h1>
+                <p class="page-subtitle">Generación automática de facturas</p>
+                <div style="background: white; padding: 40px; border-radius: 12px; text-align: center;">
+                    <p style="color: var(--text-light);">Sección en desarrollo...</p>
+                </div>
+            </section>
+
+            <section id="section-usuarios" class="page-section hidden">
+                <h1 class="page-title">Usuarios</h1>
+                <p class="page-subtitle">Administración de usuarios del sistema</p>
+                <div style="background: white; padding: 40px; border-radius: 12px; text-align: center;">
+                    <p style="color: var(--text-light);">Sección en desarrollo...</p>
+                </div>
+            </section>
+
         </div>
-    </div>
+    </main>
 
     <script>
+        // ==================== CONFIGURACIÓN ====================
         const API_URL = window.location.origin;
-        
-        // Elementos DOM
-        const loginSection = document.getElementById('login-section');
-        const panelSection = document.getElementById('panel-section');
-        const loginForm = document.getElementById('login-form');
-        const btnLogin = document.getElementById('btn-login');
-        const btnRunBot = document.getElementById('btn-run-bot');
-        const logConsole = document.getElementById('log-console');
+        let currentRUT = '';
 
-        // Manejo del Login
-        loginForm.addEventListener('submit', async (e) => {
+        // ==================== NAVEGACIÓN ENTRE SECCIONES ====================
+        function navigateToSection(sectionId) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Mostrar la sección seleccionada
+            const targetSection = document.getElementById(`section-${sectionId}`);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+            }
+            
+            // Actualizar menú activo
+            document.querySelectorAll('.menu-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.section === sectionId) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Event listeners para el menú
+        document.querySelectorAll('.menu-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const section = link.dataset.section;
+                if (section) {
+                    navigateToSection(section);
+                }
+            });
+        });
+
+        // Event listeners para las tarjetas de inicio
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const nav = card.dataset.nav;
+                if (nav) {
+                    navigateToSection(nav);
+                }
+            });
+        });
+
+        // ==================== FUNCIONES DE LOG ====================
+        function addLog(message, type = 'info') {
+            const time = new Date().toLocaleTimeString('es-CL');
+            const colorClass = {
+                'info': 'log-info',
+                'success': 'log-success',
+                'error': 'log-error',
+                'warning': 'log-warning'
+            }[type] || 'log-info';
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `
+                <span class="log-time">[${time}]</span>
+                <span class="${colorClass}">${message}</span>
+            `;
+            
+            const console = document.getElementById('console-log');
+            console.appendChild(logEntry);
+            console.scrollTop = console.scrollHeight;
+        }
+
+        function updateStatus(text, state = 'inactive') {
+            const badge = document.getElementById('estado-bot');
+            const icons = {
+                'inactive': '⚪',
+                'running': '🔄',
+                'success': '✅',
+                'error': '❌'
+            };
+            
+            badge.className = `status-badge ${state}`;
+            badge.textContent = `${icons[state]} ${text}`;
+        }
+
+        function showAlert(message, type = 'error', containerId = 'login-alert') {
+            const alert = document.getElementById(containerId);
+            const icon = type === 'error' ? '❌' : '✅';
+            
+            alert.className = `alert alert-${type}`;
+            alert.innerHTML = `<span>${icon}</span><span>${message}</span>`;
+            alert.classList.remove('hidden');
+            
+            if (type === 'success') {
+                setTimeout(() => alert.classList.add('hidden'), 5000);
+            }
+        }
+
+        // ==================== LOGIN DEL BOT ====================
+        document.getElementById('bot-login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
             const rut = document.getElementById('rut').value.trim();
             const password = document.getElementById('password').value;
-            const alertBox = document.getElementById('login-alert');
-
-            alertBox.classList.add('hidden');
+            
+            if (!rut || !password) {
+                showAlert('Por favor completa todos los campos', 'error');
+                return;
+            }
+            
+            // UI Loading
+            const btnLogin = document.getElementById('btn-login');
+            const loginText = document.getElementById('login-text');
+            const loginSpinner = document.getElementById('login-spinner');
+            
             btnLogin.disabled = true;
-            btnLogin.textContent = 'Verificando...';
+            loginText.textContent = 'Verificando...';
+            loginSpinner.classList.remove('hidden');
+            document.getElementById('login-alert').classList.add('hidden');
 
             try {
                 const response = await fetch(`${API_URL}/api/login`, {
@@ -117,60 +1002,92 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ rut, password })
                 });
+                
                 const data = await response.json();
 
                 if (!response.ok) {
-                    throw new Error(data.error || 'Error al conectar');
+                    throw new Error(data.error || 'Error de autenticación');
                 }
 
-                // Login Exitoso: Saltamos al Panel
-                loginSection.classList.add('hidden');
-                panelSection.classList.remove('hidden');
-                document.getElementById('txt-rut-activo').textContent = rut;
-                addLog('Sesión iniciada en el panel. Credenciales listas.');
+                // Éxito
+                currentRUT = rut;
+                showAlert('Credenciales validadas correctamente', 'success');
+                document.getElementById('rut-activo').textContent = rut;
+                document.getElementById('bot-control').classList.add('unlocked');
+                addLog(`✓ Credenciales validadas para RUT: ${rut}`, 'success');
+                addLog('Sistema desbloqueado. Listo para ejecutar el bot.', 'info');
 
             } catch (err) {
-                alertBox.textContent = err.message;
-                alertBox.className = 'alert alert-error';
+                showAlert(err.message, 'error');
+                addLog(`Error de autenticación: ${err.message}`, 'error');
             } finally {
                 btnLogin.disabled = false;
-                btnLogin.textContent = 'Ingresar al Panel';
+                loginText.textContent = 'Validar Credenciales';
+                loginSpinner.classList.add('hidden');
             }
         });
 
-        // Lanzar el Robot Real en Python
-        btnRunBot.addEventListener('click', async () => {
-            btnRunBot.disabled = true;
-            btnRunBot.textContent = '⏳ Robot Trabajando en SII...';
-            document.getElementById('txt-estado').textContent = '🤖 Corriendo';
-            document.getElementById('txt-estado').style.color = '#10b981';
-            addLog('Iniciando proceso de navegación automatizada...');
+        // ==================== EJECUCIÓN DEL BOT ====================
+        document.getElementById('btn-run-bot').addEventListener('click', async () => {
+            if (!currentRUT) {
+                showAlert('Primero debes autenticar las credenciales', 'error', 'bot-alert');
+                return;
+            }
+            
+            // UI Loading
+            const btnRun = document.getElementById('btn-run-bot');
+            const botIcon = document.getElementById('bot-icon');
+            const botText = document.getElementById('bot-text');
+            const botSpinner = document.getElementById('bot-spinner');
+            
+            btnRun.disabled = true;
+            botIcon.textContent = '⏳';
+            botText.textContent = 'Robot Ejecutándose...';
+            botSpinner.classList.remove('hidden');
+            document.getElementById('bot-alert').classList.add('hidden');
+            
+            updateStatus('Procesando', 'running');
+            
+            // LOG CRÍTICO DE TRAZABILIDAD
+            addLog(`🚀 Iniciando robot para el RUT: ${currentRUT}...`, 'info');
+            addLog('→ Abriendo navegador invisible (Chromium headless)...', 'info');
 
             try {
-                const response = await fetch(`${API_URL}/api/run-bot`, { method: 'POST' });
+                const response = await fetch(`${API_URL}/api/run-bot`, { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
                 const data = await response.json();
 
-                if (!response.ok) throw new Error(data.error || 'El bot falló');
+                if (!response.ok) {
+                    throw new Error(data.error || 'Error en el scraper');
+                }
 
-                addLog(`✓ Éxito: ${data.message}`);
-                document.getElementById('txt-estado').textContent = '✓ Terminado';
-                document.getElementById('txt-estado').style.color = '#10b981';
+                // Éxito
+                addLog('→ Navegador iniciado correctamente', 'success');
+                addLog('→ Conexión con portal SII establecida', 'success');
+                addLog(`✓ ${data.message}`, 'success');
+                
+                updateStatus('Completado', 'success');
+                showAlert('Extracción completada exitosamente', 'success', 'bot-alert');
 
             } catch (err) {
-                addLog(`❌ Error: ${err.message}`);
-                document.getElementById('txt-estado').textContent = '❌ Falló';
-                document.getElementById('txt-estado').style.color = '#ef4444';
+                addLog(`❌ Error crítico: ${err.message}`, 'error');
+                updateStatus('Error', 'error');
+                showAlert(err.message, 'error', 'bot-alert');
             } finally {
-                btnRunBot.disabled = false;
-                btnRunBot.textContent = '▶ Ejecutar Bot SII Ahora';
+                btnRun.disabled = false;
+                botIcon.textContent = '▶';
+                botText.textContent = 'Ejecutar Bot SII Ahora';
+                botSpinner.classList.add('hidden');
             }
         });
 
-        function addLog(message) {
-            const time = new Date().toLocaleTimeString();
-            logConsole.innerHTML += `<div>[${time}] ${message}</div>`;
-            logConsole.scrollTop = logConsole.scrollHeight;
-        }
+        // ==================== INICIALIZACIÓN ====================
+        console.log('%c⚡ Balancen - Panel Contable', 'color: #10b981; font-size: 18px; font-weight: bold;');
+        console.log('%cSistema cargado correctamente', 'color: #10b981; font-size: 13px;');
+        console.log('%cAPI URL:', API_URL, 'color: #64748b; font-size: 12px;');
     </script>
 </body>
 </html>
